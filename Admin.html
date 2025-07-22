@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Rainbow Shop - Quản lý</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* User actions */
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+    
+    .user-action {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+      color: #333;
+      text-decoration: none;
+    }
+    
+    .cart-count {
+      background-color: #6a5acd;
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    
+    /* Layout chính */
+    .main-container {
+      display: flex;
+      margin: 20px;
+    }
+    
+    /* Danh mục */
+    .category-sidebar {
+      width: 200px;
+      padding: 20px;
+      border-right: 2px solid #e0e0e0;
+      background-color: #f8f8f8;
+      border-radius: 10px;
+      margin-right: 20px;
+    }
+    
+    .category-sidebar h3 {
+      margin-bottom: 15px;
+      color: #6a5acd;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .category-sidebar ul {
+      list-style: none;
+    }
+    
+    .category-sidebar li {
+      margin-bottom: 12px;
+    }
+    
+    .category-sidebar a {
+      color: #333;
+      text-decoration: none;
+      padding: 5px 10px;
+      display: block;
+      border-radius: 5px;
+      transition: all 0.3s;
+    }
+    
+    .category-sidebar a:hover {
+      background-color: #ee4d2d;
+      color: white;
+    }
+    
+    /* Phần quản lý sản phẩm */
+    .admin-content {
+      flex: 1;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    /* Form thêm sản phẩm */
+    .product-form {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    .form-actions {
+      margin-top: 20px;
+    }
+    
+    .btn {
+      padding: 8px 16px;
+      background-color: #6a5acd;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .btn:hover {
+      background-color: #5a4abd;
+    }
+    
+    /* Danh sách sản phẩm */
+    .product-list-admin {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .product-card-admin {
+      background: white;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border: 1px solid #eee;
+    }
+    
+    .product-card-admin img {
+      width: 100%;
+      height: 160px;
+      object-fit: contain;
+      border-radius: 4px;
+      margin-bottom: 10px;
+      background: #f5f5f5;
+    }
+    
+    .product-card-admin h4 {
+      margin: 0 0 5px;
+      font-size: 16px;
+    }
+    
+    .product-card-admin .price {
+      color: #d0011b;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    
+    .product-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn-edit {
+      background-color: #ffc107;
+    }
+    
+    .btn-delete {
+      background-color: #dc3545;
+    }
+    
+  </style>
+</head>
+<body>
+  <!-- Header giống trang chủ -->
+  <div class="header">
+    <a href="TrangChu.html" style="text-decoration: none;">
+      <span class="rainbow-text">Rainbow</span>
+    </a>
+    <div class="user-actions">
+      <a href="Admin.html" class="user-action"></a>
+      <a href="#" class="user-action" id="logoutBtn"></a>
+    </div>
+  </div>
+  
+  <!-- Main content -->
+  <div class="main-container">
+    
+    <!-- Nội dung quản lý -->
+    <div class="admin-content">
+      <h1>Quản lý sản phẩm</h1>
+      
+      <!-- Form thêm/sửa sản phẩm -->
+      <form id="productForm" class="product-form">
+        <div class="form-group">
+          <label for="productName">Tên sản phẩm:</label>
+          <input type="text" id="productName" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="productPrice">Giá (VNĐ):</label>
+          <input type="number" id="productPrice" required min="0">
+        </div>
+        
+        <div class="form-group">
+          <label for="productImage">Hình ảnh:</label>
+          <input type="file" id="productImage" accept="image/*" required>
+          <img id="previewImage" width="100" style="display:none; margin-top:10px;">
+        </div>
+        
+        <div class="form-group">
+          <label for="productStock">Số lượng tồn kho:</label>
+          <input type="number" id="productStock" required min="0">
+        </div>
+        
+        <div class="form-group">
+          <label for="productDesc">Mô tả:</label>
+          <textarea id="productDesc"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="productCategory">Danh mục:</label>
+          <select id="productCategory" required>
+            <option value="">-- Chọn danh mục --</option>
+            <option value="dienthoai">Điện thoại</option>
+            <option value="quanao">Quần áo</option>
+            <option value="giaydep">Giày dép</option>
+            <option value="phukien">Phụ kiện</option>
+            <option value="khac">Khác</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="productColors">Màu sắc (ngăn cách dấu phẩy):</label>
+          <input type="text" id="productColors">
+        </div>
+        
+        <div class="form-group">
+          <label for="productSizes">Kích cỡ (ngăn cách dấu phẩy):</label>
+          <input type="text" id="productSizes">
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn" id="submitBtn">Thêm sản phẩm</button>
+          <button type="button" class="btn btn-edit" id="cancelEdit" style="display:none;">Hủy</button>
+        </div>
+      </form>
+      
+      <!-- Danh sách sản phẩm -->
+      <h2>Danh sách sản phẩm</h2>
+      <div class="product-list-admin" id="productList">
+        <!-- Sản phẩm sẽ được thêm bằng JavaScript -->
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <div class="contact-info">Thông tin liên hệ: 1900 1000</div>
+    <p>© 2025 Rainbow Shop</p>
+  </div>
+
+  <script>
+    // Kiểm tra đăng nhập
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    
+    if (!currentUser || currentUser.role !== "seller") {
+      alert("Bạn không có quyền truy cập trang này!");
+      window.location.href = "TrangChu.html";
+    }
+    
+    // Đăng xuất
+    document.getElementById("logoutBtn").addEventListener("click", function(e) {
+      e.preventDefault();
+      if (confirm("Bạn có chắc muốn đăng xuất không?")) {
+        localStorage.removeItem("currentUser");
+        window.location.href = "TrangChu.html";
+      }
+    });
+    
+    // Quản lý sản phẩm
+    let products = JSON.parse(localStorage.getItem("products")) || [];
+    let editingIndex = null;
+    
+    const form = document.getElementById("productForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const cancelEditBtn = document.getElementById("cancelEdit");
+    const productList = document.getElementById("productList");
+    const productImage = document.getElementById("productImage");
+    const previewImage = document.getElementById("previewImage");
+    
+    // Xem trước ảnh
+    productImage.addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          previewImage.src = e.target.result;
+          previewImage.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    // Render danh sách sản phẩm
+    function renderProducts() {
+      productList.innerHTML = "";
+      
+      products.forEach((product, index) => {
+        const productCard = document.createElement("div");
+        productCard.className = "product-card-admin";
+        
+        productCard.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <h4>${product.name}</h4>
+          <p class="price">${Number(product.price).toLocaleString()}đ</p>
+          <p>${product.desc || "Không có mô tả"}</p>
+          <p>Tồn kho: ${product.stock || 0}</p>
+          <div class="product-actions">
+            <button class="btn btn-edit" onclick="editProduct(${index})">Sửa</button>
+            <button class="btn btn-delete" onclick="deleteProduct(${index})">Xóa</button>
+          </div>
+        `;
+        
+        productList.appendChild(productCard);
+      });
+    }
+    
+    // Thêm/sửa sản phẩm
+    form.addEventListener("submit", function(e) {
+      e.preventDefault();
+      
+      const file = productImage.files[0];
+      if (!file && !editingIndex) {
+        alert("Vui lòng chọn ảnh sản phẩm");
+        return;
+      }
+      
+      const handleProduct = (imageData) => {
+        const productData = {
+          name: document.getElementById("productName").value,
+          price: document.getElementById("productPrice").value,
+          image: imageData,
+          desc: document.getElementById("productDesc").value,
+          stock: document.getElementById("productStock").value,
+          colors: document.getElementById("productColors").value,
+          sizes: document.getElementById("productSizes").value,
+          category: document.getElementById("productCategory").value
+        };
+        
+        if (editingIndex !== null) {
+          // Sửa sản phẩm
+          products[editingIndex] = productData;
+        } else {
+          // Thêm sản phẩm mới
+          products.push(productData);
+        }
+        
+        localStorage.setItem("products", JSON.stringify(products));
+        form.reset();
+        previewImage.style.display = "none";
+        editingIndex = null;
+        submitBtn.textContent = "Thêm sản phẩm";
+        cancelEditBtn.style.display = "none";
+        renderProducts();
+      };
+      
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          handleProduct(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        handleProduct(products[editingIndex].image);
+      }
+    });
+    
+    // Sửa sản phẩm
+    window.editProduct = function(index) {
+      const product = products[index];
+      document.getElementById("productName").value = product.name;
+      document.getElementById("productPrice").value = product.price;
+      document.getElementById("productDesc").value = product.desc || "";
+      document.getElementById("productStock").value = product.stock || "";
+      document.getElementById("productColors").value = product.colors || "";
+      document.getElementById("productSizes").value = product.sizes || "";
+      document.getElementById("productCategory").value = product.category || "";
+      
+      previewImage.src = product.image;
+      previewImage.style.display = "block";
+      
+      editingIndex = index;
+      submitBtn.textContent = "Cập nhật";
+      cancelEditBtn.style.display = "inline-block";
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    
+    // Hủy sửa
+    cancelEditBtn.addEventListener("click", function() {
+      form.reset();
+      previewImage.style.display = "none";
+      editingIndex = null;
+      submitBtn.textContent = "Thêm sản phẩm";
+      cancelEditBtn.style.display = "none";
+    });
+    
+    // Xóa sản phẩm
+    window.deleteProduct = function(index) {
+      if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
+        products.splice(index, 1);
+        localStorage.setItem("products", JSON.stringify(products));
+        renderProducts();
+        
+        if (editingIndex === index) {
+          form.reset();
+          previewImage.style.display = "none";
+          editingIndex = null;
+          submitBtn.textContent = "Thêm sản phẩm";
+          cancelEditBtn.style.display = "none";
+        }
+      }
+    };
+    
+    // Lọc theo danh mục
+    document.querySelectorAll(".category-filter").forEach(link => {
+      link.addEventListener("click", function(e) {
+        e.preventDefault();
+        const category = this.getAttribute("data-category");
+      });
+    });
+    renderProducts();
+  </script>
+</body>
+</html>

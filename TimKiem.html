@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Rainbow Shop - Kết quả tìm kiếm</title>
+    <link rel="stylesheet" href="style.css">
+  <style>
+    :root {
+      --primary-color: #6a5acd;
+      --secondary-color: #ee4d2d;
+    }    
+    
+    /* Main content */
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+    
+    .search-title {
+      text-align: center;
+      margin: 30px 0;
+      color: var(--primary-color);
+      font-size: 28px;
+    }
+    
+    /* Search results */
+    .search-results {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+    
+    .product-card {
+      background: var(--white);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    }
+    
+    .product-image-container {
+      height: 200px;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f5f5f5;
+    }
+    
+    .product-image {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    
+    .product-info {
+      padding: 15px;
+    }
+    
+    
+    .product-price {
+      color: var(--secondary-color);
+      font-weight: bold;
+      font-size: 18px;
+    }
+    
+    .no-results {
+      text-align: center;
+      padding: 50px;
+      font-size: 18px;
+      color: var(--light-text);
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .search-results {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+      }
+      
+      .product-image-container {
+        height: 160px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .search-results {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header giống trang chủ -->
+  <div class="header">
+    <a href="TrangChu.html" style="text-decoration: none;">
+      <span class="rainbow-text">Rainbow</span>
+    </a>
+    
+    <div class="nav">
+      <a href="GioHang.html">Giỏ hàng</a>
+    </div>
+  </div>
+  
+  <!-- Main content -->
+  <div class="container">
+    <h1 class="search-title">Kết quả tìm kiếm</h1>
+    
+    <div class="search-results" id="searchResults"></div>
+  </div>
+  
+  <!-- Footer giống trang chủ -->
+  <div class="footer">
+    <div class="contact-info">Thông tin liên hệ: 1900 1000</div>
+    <p>© 2025 Rainbow Shop</p>
+  </div>
+
+  <script>
+    // Giữ nguyên toàn bộ chức năng tìm kiếm
+    const container = document.getElementById("searchResults");
+    const results = JSON.parse(localStorage.getItem("searchResults")) || [];
+
+    if (results.length === 0) {
+      container.innerHTML = `<div class="no-results">Không tìm thấy sản phẩm phù hợp.</div>`;
+    } else {
+      results.forEach(product => {
+        const link = document.createElement("a");
+        link.className = "product-card";
+        link.href = `SanPham.html?name=${encodeURIComponent(product.name)}&price=${product.price}&img=${encodeURIComponent(product.image)}&desc=${encodeURIComponent(product.desc || '')}&colors=${encodeURIComponent(product.colors || '')}&sizes=${encodeURIComponent(product.sizes || '')}&stock=${product.stock}&shipping=${product.shipping}&discount=${product.discount || ''}`;
+        
+        link.innerHTML = `
+          <div class="product-image-container">
+            <img src="${product.image}" class="product-image" alt="${product.name}">
+          </div>
+          <div class="product-info">
+            <div class="product-name">${product.name}</div>
+            <div class="product-price">${Number(product.price).toLocaleString()}đ</div>
+          </div>
+        `;
+        container.appendChild(link);
+      });
+    }
+  </script>
+</body>
+</html>

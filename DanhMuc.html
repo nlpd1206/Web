@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Rainbow Shop</title>
+  <style>      
+    /* Category sidebar */
+    .category-sidebar {
+      width: 250px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .category-sidebar h3 {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .category-sidebar ul {
+      list-style: none;
+    }
+    
+    .category-sidebar li {
+      margin-bottom: 10px;
+    }
+    
+    .category-link {
+      display: block;
+      padding: 8px 10px;
+      color: #333;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: all 0.3s;
+    }
+    
+    .category-link:hover, .category-link.active {
+      background-color: #f0f0ff;
+      color: #6a5acd;
+    }
+    
+    /* Product content */
+    .product-content {
+      flex: 1;
+    }
+    
+    .category-title {
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 30px;
+      background: linear-gradient(90deg, 
+        #ff0000, #ff7f00, #ffff00, #00ff00,
+        #0000ff, #4b0082, #9400d3);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      background-size: 400% 100%;
+      animation: gradientFlow 5s linear infinite;
+    }
+    
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    
+    .product-card {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .product-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: contain;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      background: #f8f8f8;
+    }
+    
+    .product-name {
+      font-weight: 600;
+      margin-bottom: 5px;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .product-price {
+      color: #d0011b;
+      font-weight: bold;
+    }
+    
+
+    @keyframes gradientFlow {
+      0% { background-position: 0% 50% }
+      100% { background-position: 100% 50% }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+        padding: 0 15px;
+      }
+      
+      .category-sidebar {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <a href="TrangChu.html" style="text-decoration: none;">
+      <span class="rainbow-text">Rainbow</span>
+    </a>
+    
+    <div class="nav">
+      <a href="GioHang.html">Giỏ hàng</a>
+      <a href="DangNhap.html" id="authLink">Đăng nhập</a>
+      <a href="#" id="logoutBtn" style="display:none;">Đăng xuất</a>
+    </div>
+  </div>
+  
+  <!-- Main content -->
+  <div class="main-container">
+    <!-- Danh mục -->
+    <div class="category-sidebar">
+      <h3>Danh mục</h3>
+      <ul>
+        <li><a href="#" class="category-link active" data-category="all">Tất cả sản phẩm</a></li>
+        <li><a href="#" class="category-link" data-category="dienthoai">Điện thoại</a></li>
+        <li><a href="#" class="category-link" data-category="quanao">Quần áo</a></li>
+        <li><a href="#" class="category-link" data-category="giaydep">Giày dép</a></li>
+        <li><a href="#" class="category-link" data-category="phukien">Phụ kiện</a></li>
+        <li><a href="#" class="category-link" data-category="khac">Khác</a></li>
+      </ul>
+    </div>
+    
+    <!-- Sản phẩm -->
+    <div class="product-content">
+      <h1 class="category-title" id="categoryTitle">Sản phẩm nổi bật</h1>
+      <div class="product-list" id="productList">
+        <!-- Sản phẩm sẽ được thêm bằng JavaScript -->
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <div class="footer">
+    <div class="contact-info">Thông tin liên hệ: 1900 1000</div>
+    <p>© 2025 Rainbow Shop</p>
+  </div>
+
+  <script>
+    // Danh sách danh mục
+    const categoryNames = {
+      all: "Sản phẩm nổi bật",
+      dienthoai: "Điện thoại",
+      quanao: "Quần áo",
+      giaydep: "Giày dép",
+      phukien: "Phụ kiện",
+      khac: "Khác"
+    };
+
+    // Danh sách sản phẩm mặc định
+    const defaultProducts = [
+      {
+        name: "Điện thoại Xiaomi",
+        price: 3990000,
+        image: "img/xiaomi-mi-9-1-600x600.jpg",
+        desc: "Smartphone cao cấp",
+        category: "dienthoai"
+      },
+      {
+        name: "Áo Hoodie Unisex",
+        price: 299000,
+        image: "img/ao-hoodie-unisex-nam-nu-insidemen-ihd002bz__7__ff4a3abea33141b99dd7dd0ad98039ec.jpg",
+        desc: "Áo hoodie dành cho nam/nữ, chất liệu nỉ, giữ ấm tốt",
+        category: "quanao"
+      },
+      {
+        name: "Giày Thể Thao",
+        price: 599000,
+        image: "img/images.jpg",
+        desc: "Giày thể thao êm chân",
+        category: "giaydep"
+      },
+      {
+        name: "Ốp điện thoại iPhone",
+        price: 99000,
+        image: "img/op-lung-iphone-15-pro-max-uniq-hybrid-magclick-charging-lifepro-xtreme-af-1772.jpg",
+        desc: "Ốp lề bắt camera, bảo vệ chống trượt",
+        category: "phukien"
+      },
+      {
+        name: "Quạt Goojodoq",
+        price: 168340,
+        image: "img/6f9a32aed03c4908728b041ee310db99.jpg",
+        desc: "Quạt gấp 3 trong 1, 100 cấp độ, cầm tay siêu mát",
+        category: "khac"
+      },
+      {
+        name: "Tai nghe Bluetooth",
+        price: 200000,
+        image: "img/tai-nghe-bluetooth.jpg",
+        desc: "Tai nghe không dây chất lượng cao",
+        category: "khac"
+      }
+    ];
+
+    // Hàm lọc sản phẩm theo danh mục
+    function filterProductsByCategory(category) {
+      // Cập nhật tiêu đề
+      document.getElementById('categoryTitle').textContent = categoryNames[category];
+      
+      // Cập nhật active state cho menu
+      document.querySelectorAll('.category-link').forEach(link => {
+        link.classList.toggle('active', link.getAttribute('data-category') === category);
+      });
+      
+      // Lọc sản phẩm
+      const allProducts = [...defaultProducts, ...JSON.parse(localStorage.getItem('products')) || []];
+      const filteredProducts = category === 'all' 
+        ? allProducts 
+        : allProducts.filter(product => product.category === category);
+      
+      renderFilteredProducts(filteredProducts);
+    }
+
+    // Hàm hiển thị sản phẩm đã lọc
+    function renderFilteredProducts(products) {
+      const productList = document.getElementById("productList");
+      productList.innerHTML = "";
+
+      if (products.length === 0) {
+        productList.innerHTML = '<p style="grid-column:1/-1;text-align:center;">Không có sản phẩm nào trong danh mục này</p>';
+        return;
+      }
+
+      products.forEach(product => {
+        const productCard = document.createElement("a");
+        productCard.className = "product-card";
+        productCard.href = `SanPham.html?name=${encodeURIComponent(product.name)}&price=${product.price}&img=${encodeURIComponent(product.image)}&desc=${encodeURIComponent(product.desc)}&category=${product.category}`;
+        
+        productCard.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <p class="product-name">${product.name}</p>
+          <p class="product-price">${Number(product.price).toLocaleString()}đ</p>
+        `;
+        productList.appendChild(productCard);
+      });
+    }
+
+    // Thêm sự kiện click cho các danh mục
+    document.querySelectorAll('.category-link').forEach(link => {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const category = this.getAttribute('data-category');
+        filterProductsByCategory(category);
+      });
+    });
+
+    // Kiểm tra đăng nhập
+    document.addEventListener("DOMContentLoaded", function() {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      const authLink = document.getElementById("authLink");
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      if (currentUser) {
+        authLink.style.display = "none";
+        logoutBtn.style.display = "inline";
+        
+        logoutBtn.addEventListener("click", function(e) {
+          e.preventDefault();
+          if (confirm("Bạn có chắc muốn đăng xuất không?")) {
+            localStorage.removeItem("currentUser");
+            location.href = "TrangChu.html";
+          }
+        });
+      }
+
+      // Mặc định hiển thị tất cả sản phẩm
+      filterProductsByCategory('all');
+    });
+  </script>
+</body>
+</html>

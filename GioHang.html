@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Rainbow - Giỏ hàng</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      text-decoration: none;
+      display: inline-flex;
+    }
+    
+    .logo span {
+      transition: all 0.3s ease;
+    }
+    
+    .logo:hover span {
+      transform: translateY(-2px);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    /* User actions */
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+    
+    .user-action {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 14px;
+      color: #333;
+      text-decoration: none;
+    }
+    
+    .cart-count {
+      background-color: #6a5acd;
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    
+    /* Main content */
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    /* Cart items */
+    .cart-item {
+      display: flex;
+      border: 1px solid #eee;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      background: white;
+      align-items: center;
+    }
+    
+    .cart-item img {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 20px;
+    }
+    
+    .cart-item-info {
+      flex: 1;
+    }
+    
+    .cart-item h3 {
+      margin-bottom: 5px;
+    }
+    
+    .cart-item-price {
+      color: #d0011b;
+      font-weight: bold;
+      margin: 5px 0;
+    }
+    
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0;
+    }
+    
+    .quantity-controls button {
+      padding: 5px 10px;
+      background: #f0f0f0;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    /* Discount section */
+    .discount-section {
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .discount-section input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      flex: 1;
+      max-width: 300px;
+    }
+    
+    .discount-section button {
+      padding: 8px 15px;
+      background: #6a5acd;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    /* Total and checkout */
+    .total-section {
+      text-align: right;
+      margin: 20px 0;
+    }
+    
+    .total-amount {
+      font-size: 24px;
+      color: #d0011b;
+      font-weight: bold;
+    }
+    
+    .checkout-btn {
+      padding: 12px 25px;
+      background: #aa2133;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .checkout-btn:hover {
+      background: #a90014;
+    }
+    
+    /* Empty cart */
+    .empty-cart {
+      text-align: center;
+      padding: 40px 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+     <a href="TrangChu.html" style="text-decoration: none;">
+  <span class="rainbow-text">Rainbow</span>
+</a>
+    <!-- User actions -->
+    <div class="user-actions">
+      <a href="GioHang.html" class="user-action"><span class="cart-count" id="cartCount">0</span></a>
+      <a href="DangNhap.html" class="user-action" id="authLink"></a>
+      <a href="#" class="user-action" id="logoutBtn" style="display:none;">Đăng xuất</a>
+    </div>
+  </div>
+  
+  <!-- Main content -->
+  <div class="container">
+    <h1>Giỏ hàng của bạn</h1>
+    <div id="cart-list"></div>
+
+    <div class="discount-section">
+      <input type="text" id="discountCode" placeholder="Nhập mã giảm giá">
+      <button onclick="applyCartDiscount()">Áp dụng</button>
+      <p id="discountMessage" style="color: green; margin-left: 10px;"></p>
+    </div>
+
+    <div class="total-section">
+      <h2>Tổng cộng: <span id="totalDisplay" class="total-amount">0đ</span></h2>
+      <button onclick="buySelected()" class="checkout-btn">Mua các sản phẩm đã chọn</button>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <div class="footer">
+    <div class="contact-info">Thông tin liên hệ: 1900 1000</div>
+    <p>© 2025 Rainbow Shop</p>
+  </div>
+
+  <script>
+    let globalCart = [];
+    let selectedIndexes = [];
+
+    function loadCart() {
+      const cartList = document.getElementById("cart-list");
+      cartList.innerHTML = "";
+
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      globalCart = cart;
+      document.getElementById("cartCount").textContent = cart.length;
+
+      if (cart.length === 0) {
+        cartList.innerHTML = `
+          <div class="empty-cart">
+            <p>Giỏ hàng đang trống</p>
+            <a href="TrangChu.html" style="color: #6a5acd; text-decoration: none; font-weight: bold;">
+              Tiếp tục mua sắm
+            </a>
+          </div>
+        `;
+        return;
+      }
+
+      cart.forEach((item, index) => {
+        const cartItem = document.createElement("div");
+        cartItem.className = "cart-item";
+        
+        const price = Number(item.price);
+        const quantity = Number(item.quantity);
+        const totalPrice = (price * quantity).toLocaleString();
+        const imageUrl = item.image?.trim() || "img/default.png";
+
+        cartItem.innerHTML = `
+          <input type="checkbox" class="select-to-buy" data-index="${index}" onchange="updateTotal()" style="margin-right: 15px;">
+          <img src="${imageUrl}" alt="${item.name}">
+          <div class="cart-item-info">
+            <h3>${item.name}</h3>
+            <p class="cart-item-price">
+              ${price.toLocaleString()}đ x ${quantity} = ${totalPrice}đ
+            </p>
+            ${item.desc ? `<p>${item.desc}</p>` : ""}
+            ${item.color ? `<p>Màu sắc: ${item.color}</p>` : ""}
+            ${item.size ? `<p>Loại: ${item.size}</p>` : ""}
+            <div class="quantity-controls">
+              <button onclick="changeQuantity(${index}, -1)">➖</button>
+              <span id="quantity-${index}">${quantity}</span>
+              <button onclick="changeQuantity(${index}, 1)">➕</button>
+            </div>
+            ${item.discount ? `<p style='color: green;'>Mã KM: ${item.discount}</p>` : ""}
+            <button onclick="removeItem(${index})" style="margin-top: 10px; padding: 5px 10px; background: #f0f0f0; border: none; border-radius: 5px; cursor: pointer;">
+              Xóa
+            </button>
+          </div>
+        `;
+        cartList.appendChild(cartItem);
+      });
+    }
+
+    function changeQuantity(index, delta) {
+      const cart = globalCart;
+      let currentQty = Number(cart[index].quantity);
+      currentQty += delta;
+      if (currentQty < 1) return;
+      cart[index].quantity = currentQty;
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    function removeItem(index) {
+      const cart = globalCart;
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    }
+
+    function updateTotal() {
+      const checkboxes = document.querySelectorAll(".select-to-buy");
+      let total = 0;
+      selectedIndexes = [];
+
+      checkboxes.forEach(cb => {
+        const index = parseInt(cb.getAttribute("data-index"));
+        if (cb.checked) {
+          const item = globalCart[index];
+          total += item.price * item.quantity;
+          selectedIndexes.push(index);
+        }
+      });
+
+      const discountValue = calculateDiscount(total);
+      const finalTotal = Math.max(total - discountValue, 0);
+
+      document.getElementById("totalDisplay").textContent = finalTotal.toLocaleString() + "đ";
+    }
+
+    function calculateDiscount(total) {
+      const code = document.getElementById("discountCode").value.trim();
+      const msg = document.getElementById("discountMessage");
+
+      if (!code) {
+        msg.innerText = "";
+        return 0;
+      }
+
+      if (code === "GIAM10") {
+        msg.style.color = "green";
+        msg.innerText = "Áp dụng mã GIAM10 - giảm 10%";
+        return total * 0.1;
+      } else if (code === "GIAM50K") {
+        msg.style.color = "green";
+        msg.innerText = "Áp dụng mã GIAM50K - giảm 50.000đ";
+        return 50000;
+      } else {
+        msg.style.color = "red";
+        msg.innerText = "Mã giảm giá không hợp lệ!";
+        return 0;
+      }
+    }
+
+    function applyCartDiscount() {
+      updateTotal();
+    }
+
+    function buySelected() {
+      const selected = document.querySelectorAll('.select-to-buy:checked');
+      if (selected.length === 0) {
+        return alert("Vui lòng chọn sản phẩm để mua.");
+      }
+
+      const selectedProducts = selectedIndexes.map(i => globalCart[i]);
+      localStorage.setItem("cartDiscountCode", document.getElementById("discountCode").value.trim());
+      localStorage.setItem("selectedToBuy", JSON.stringify(selectedProducts));
+      localStorage.removeItem("checkoutItem");
+      window.location.href = "ThanhToan.html";
+    }
+
+    // Xử lý đăng nhập/đăng xuất
+    document.addEventListener("DOMContentLoaded", function() {
+      const authLink = document.getElementById("authLink");
+      const logoutBtn = document.getElementById("logoutBtn");
+      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+      if (currentUser) {
+        authLink.style.display = "none";
+        logoutBtn.style.display = "inline";
+        
+        logoutBtn.addEventListener("click", function(e) {
+          e.preventDefault();
+          if (confirm("Bạn có chắc muốn đăng xuất không?")) {
+            localStorage.removeItem("currentUser");
+            location.href = "TrangChu.html";
+          }
+        });
+        
+        if (currentUser.role === "seller") {
+          const userActions = document.querySelector(".user-actions");
+          const adminLink = document.createElement("a");
+          adminLink.href = "Admin.html";
+          adminLink.className = "user-action";
+          adminLink.textContent = "Quản lý";
+          userActions.insertBefore(adminLink, authLink);
+        }
+      } else {
+        logoutBtn.style.display = "none";
+        authLink.style.display = "inline";
+      }
+      
+      loadCart();
+    });
+  </script>
+</body>
+</html>

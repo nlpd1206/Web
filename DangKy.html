@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Rainbow Shop - Đăng ký</title>
+  <link rel="stylesheet" href="style.css">
+  <style> 
+    /* Main container */
+    .main-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 120px);
+      padding: 20px;
+    }
+    
+    /* Form đăng ký */
+    .register-container {
+      width: 100%;
+      max-width: 500px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      padding: 30px;
+      margin: 20px 0;
+    }
+    
+    .register-title {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #6a5acd;
+      font-size: 24px;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #555;
+    }
+    
+    .form-group input, 
+    .form-group select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+      transition: border-color 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+      border-color: #6a5acd;
+      outline: none;
+    }
+    
+    .account-type {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .account-type label {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .account-type input[type="radio"] {
+      display: none;
+    }
+    
+    .account-type input[type="radio"]:checked + label {
+      background-color: #6a5acd;
+      color: white;
+      border-color: #6a5acd;
+    }
+    
+    .form-actions {
+      margin-top: 30px;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #6a5acd;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    
+    .btn:hover {
+      background-color: #5a4abd;
+    }
+    
+    .login-link {
+      text-align: center;
+      margin-top: 20px;
+      color: #666;
+    }
+    
+    .login-link a {
+      color: #6a5acd;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+  
+    /* Responsive */
+    @media (max-width: 600px) {
+      .register-container {
+        padding: 20px;
+      }
+      
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .rainbow-text {
+        margin-bottom: 10px;
+      }
+      
+      .account-type {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header giống trang chủ -->
+  <div class="header">
+    <a href="TrangChu.html" style="text-decoration: none;">
+      <span class="rainbow-text">Rainbow</span>
+    </a>
+  </div>
+  
+  <!-- Main content -->
+  <div class="main-container">
+    <div class="register-container">
+      <h1 class="register-title">Đăng ký tài khoản</h1>
+      
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="username">Tên đăng nhập</label>
+          <input type="text" id="username" required placeholder="Nhập tên đăng nhập">
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" required placeholder="Nhập email của bạn">
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Mật khẩu</label>
+          <input type="password" id="password" required placeholder="Nhập mật khẩu">
+        </div>
+        
+        <div class="form-group">
+          <label for="confirmPassword">Xác nhận mật khẩu</label>
+          <input type="password" id="confirmPassword" required placeholder="Nhập lại mật khẩu">
+        </div>
+        
+        <div class="form-group">
+          <label for="phone">Số điện thoại</label>
+          <input type="tel" id="phone" placeholder="Nhập số điện thoại (không bắt buộc)">
+        </div>
+        
+        <!-- Phần chọn loại tài khoản -->
+        <div class="form-group">
+          <label>Loại tài khoản</label>
+          <div class="account-type">
+            <input type="radio" id="customer" name="accountType" value="user" checked>
+            <label for="customer">Khách hàng</label>
+            
+            <input type="radio" id="seller" name="accountType" value="seller">
+            <label for="seller">Người bán</label>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="btn">Đăng ký</button>
+        </div>
+      </form>
+      
+      <div class="login-link">
+        Đã có tài khoản? <a href="DangNhap.html">Đăng nhập ngay</a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer giống trang chủ -->
+  <div class="footer">
+    <div class="contact-info">Thông tin liên hệ: 1900 1000</div>
+    <p>© 2025 Rainbow Shop</p>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const phone = document.getElementById('phone').value;
+      const accountType = document.querySelector('input[name="accountType"]:checked').value;
+      
+      // Kiểm tra mật khẩu trùng khớp
+      if (password !== confirmPassword) {
+        alert('Mật khẩu không trùng khớp!');
+        return;
+      }
+      
+      // Kiểm tra user đã tồn tại chưa
+      const users = JSON.parse(localStorage.getItem('users')) || [];
+      const userExists = users.some(user => user.username === username || user.email === email);
+      
+      if (userExists) {
+        alert('Tên đăng nhập hoặc email đã tồn tại!');
+        return;
+      }
+      
+      // Thêm user mới
+      const newUser = {
+        username,
+        email,
+        password,
+        phone: phone || '',
+        role: accountType,
+        registeredAt: new Date().toISOString()
+      };
+      
+      users.push(newUser);
+      localStorage.setItem('users', JSON.stringify(users));
+      
+      alert('Đăng ký thành công! Vui lòng đăng nhập.');
+      window.location.href = 'DangNhap.html';
+    });
+  </script>
+</body>
+</html>
