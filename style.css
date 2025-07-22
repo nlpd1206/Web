@@ -302,8 +302,8 @@ body {
     }
      .footer {
             background: linear-gradient(45deg, 
-                #ff0000, #ff7f00, #ffff00, #00ff00, 
-                #0000ff, #4b0082, #9400d3);
+                #fa9a9a, #e9a158, #f0f084, #98fa98, 
+                #4949db, #8c36ca, #cf71f8);
             background-size: 400% 400%;
             animation: rainbow 5s ease infinite;
             padding: 10px;
