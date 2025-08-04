@@ -173,6 +173,23 @@
   </div>
 
   <script>
+    // Thêm tài khoản admin mặc định nếu chưa có
+    function initAdminAccount() {
+      const users = JSON.parse(localStorage.getItem("users")) || [];
+      const adminExists = users.some(u => u.username === "admin" && u.role === "admin");
+      
+      if (!adminExists) {
+        users.push({
+          username: "admin",
+          password: "123",
+          role: "admin",
+          email: "admin@rainbowshop.com",
+          fullname: "Quản trị viên hệ thống"
+        });
+        localStorage.setItem("users", JSON.stringify(users));
+      }
+    }
+
     // 👁 Hiện/ẩn mật khẩu khi rê chuột vào icon
     const passwordInput = document.getElementById("password");
     const eyeIcon = document.getElementById("toggleEye");
@@ -195,12 +212,23 @@
       const matchedUser = users.find(u => u.username === username && u.password === password);
 
       if (matchedUser) {
-        localStorage.setItem("currentUser", JSON.stringify(matchedUser)); // Lưu người dùng đã đăng nhập
-        window.location.href = "TrangChu.html";
+        localStorage.setItem("currentUser", JSON.stringify(matchedUser));
+        
+        // CHỈ ADMIN MỚI VÀO ĐƯỢC TRANG AD.HTML
+        if (matchedUser.role === "admin") {
+          window.location.href = "AD.html";
+        } else {
+          window.location.href = "TrangChu.html";
+        }
       } else {
-        document.getElementById("loginMessage").innerText = "❌ Tài khoản không tồn tại hoặc sai mật khẩu.";
+        document.getElementById("loginMessage").innerText = "❌ Tài khoản hoặc mật khẩu không đúng";
       }
     };
+
+    // Khi trang tải
+    document.addEventListener("DOMContentLoaded", function() {
+      initAdminAccount();
+    });
   </script>
 </body>
 </html>
