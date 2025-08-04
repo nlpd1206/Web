@@ -71,6 +71,8 @@
       border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       height: fit-content;
+      position: sticky;
+      top: 20px;
     }
     
     .category-sidebar h3 {
@@ -81,6 +83,7 @@
     
     .category-sidebar ul {
       list-style: none;
+      padding: 0;
     }
     
     .category-sidebar li {
@@ -106,7 +109,7 @@
       color: white;
     }
     
-    /* Sản phẩm */
+    /* Nội dung sản phẩm */
     .product-content {
       flex: 1;
     }
@@ -123,6 +126,20 @@
       color: transparent;
       background-size: 400% 100%;
       animation: gradientFlow 5s linear infinite;
+    }
+    
+    /* Phần danh mục sản phẩm */
+    .category-section {
+      margin-bottom: 40px;
+      scroll-margin-top: 20px; /* Khoảng cách khi cuộn đến */
+    }
+    
+    .category-title {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #5e79fb;
+      color: #333;
     }
     
     .product-list {
@@ -177,6 +194,23 @@
       0% { background-position: 0% 50% }
       100% { background-position: 100% 50% }
     }
+    
+    .no-products {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: #666;
+      padding: 20px;
+    }
+
+    /* Đảm bảo các section mới có style đúng */
+.category-section {
+  margin-bottom: 40px;
+  scroll-margin-top: 80px; /* Để khi cuộn tới không bị header che */
+}
+
+.category-section:first-of-type {
+  margin-top: 20px;
+}
   </style>
 </head>
 <body>
@@ -207,19 +241,56 @@
       <h3>Danh mục</h3>
       <ul>
         <li><a href="#" class="category-link" data-category="all">Tất cả sản phẩm</a></li>
-        <li><a href="#" class="category-link" data-category="dienthoai">Điện thoại</a></li>
-        <li><a href="#" class="category-link" data-category="quanao">Quần áo</a></li>
-        <li><a href="#" class="category-link" data-category="giaydep">Giày dép</a></li>
-        <li><a href="#" class="category-link" data-category="phukien">Phụ kiện</a></li>
-        <li><a href="#" class="category-link" data-category="khac">Khác</a></li>
+        <li><a href="#dienthoai" class="category-link" data-category="dienthoai">Điện thoại</a></li>
+        <li><a href="#quanao" class="category-link" data-category="quanao">Quần áo</a></li>
+        <li><a href="#giaydep" class="category-link" data-category="giaydep">Giày dép</a></li>
+        <li><a href="#phukien" class="category-link" data-category="phukien">Phụ kiện</a></li>
+        <li><a href="#khac" class="category-link" data-category="khac">Khác</a></li>
       </ul>
     </div>
     
     <!-- Sản phẩm -->
     <div class="product-content">
       <h1>Sản phẩm nổi bật</h1>
-      <div class="product-list" id="productList">
-        <!-- Sản phẩm sẽ được thêm bằng JavaScript -->
+      
+      <!-- Danh mục Điện thoại -->
+      <div id="dienthoai" class="category-section">
+        <h2 class="category-title">Điện thoại</h2>
+        <div class="product-list" id="phoneProducts">
+          <!-- Sản phẩm điện thoại sẽ được thêm bằng JavaScript -->
+        </div>
+      </div>
+      
+      <!-- Danh mục Quần áo -->
+      <div id="quanao" class="category-section">
+        <h2 class="category-title">Quần áo</h2>
+        <div class="product-list" id="clothingProducts">
+          <!-- Sản phẩm quần áo sẽ được thêm bằng JavaScript -->
+        </div>
+      </div>
+      
+      <!-- Danh mục Giày dép -->
+      <div id="giaydep" class="category-section">
+        <h2 class="category-title">Giày dép</h2>
+        <div class="product-list" id="shoeProducts">
+          <!-- Sản phẩm giày dép sẽ được thêm bằng JavaScript -->
+        </div>
+      </div>
+      
+      <!-- Danh mục Phụ kiện -->
+      <div id="phukien" class="category-section">
+        <h2 class="category-title">Phụ kiện</h2>
+        <div class="product-list" id="accessoryProducts">
+          <!-- Sản phẩm phụ kiện sẽ được thêm bằng JavaScript -->
+        </div>
+      </div>
+      
+      <!-- Danh mục Khác -->
+      <div id="khac" class="category-section">
+        <h2 class="category-title">Khác</h2>
+        <div class="product-list" id="otherProducts">
+          <!-- Sản phẩm khác sẽ được thêm bằng JavaScript -->
+        </div>
       </div>
     </div>
   </div>
@@ -231,125 +302,186 @@
   </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const authLink = document.getElementById("authLink");
-      const logoutBtn = document.getElementById("logoutBtn");
-      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+   document.addEventListener("DOMContentLoaded", function () {
+  // Phần xử lý đăng nhập/đăng xuất
+  const authLink = document.getElementById("authLink");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
 
-      if (currentUser) {
-        authLink.style.display = "none";
-        logoutBtn.style.display = "inline";
-        
-        logoutBtn.addEventListener("click", function (e) {
-          e.preventDefault();
-          if (confirm("Bạn có chắc muốn đăng xuất không?")) {
-            localStorage.removeItem("currentUser");
-            location.href = "TrangChu.html";
-          }
-        });
-      } else {
-        logoutBtn.style.display = "none";
-        authLink.style.display = "inline";
+  if (currentUser) {
+    authLink.style.display = "none";
+    logoutBtn.style.display = "inline";
+    
+    logoutBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (confirm("Bạn có chắc muốn đăng xuất không?")) {
+        localStorage.removeItem("currentUser");
+        location.href = "TrangChu.html";
       }
-
-      updateCartCount();
-      renderProducts('all');
-      
-      if (currentUser?.role === "seller") {
-        const userActions = document.querySelector(".user-actions");
-        const adminLink = document.createElement("a");
-        adminLink.href = "Admin.html";
-        adminLink.className = "user-action";
-        adminLink.textContent = "Quản lý";
-        userActions.insertBefore(adminLink, authLink);
-      }
-
-      // Thêm sự kiện click cho các danh mục
-      document.querySelectorAll('.category-link').forEach(link => {
-        link.addEventListener('click', function(e) {
-          e.preventDefault();
-          const category = this.getAttribute('data-category');
-          
-          // Xóa active tất cả các link
-          document.querySelectorAll('.category-link').forEach(item => {
-            item.classList.remove('active');
-          });
-          
-          // Thêm active cho link được click
-          this.classList.add('active');
-          
-          // Hiển thị sản phẩm theo danh mục
-          renderProducts(category);
-        });
-      });
     });
+
+    // Thêm nút ADMIN nếu là admin
+    if (currentUser.role === "admin") {
+      const userActions = document.querySelector(".user-actions");
+      const adminLink = document.createElement("a");
+      adminLink.href = "AD.html";
+      adminLink.className = "user-action";
+      adminLink.textContent = "ADMIN";
+      userActions.insertBefore(adminLink, authLink);
+    }
+  
+  if (currentUser.role === "seller") {
+      const userActions = document.querySelector(".user-actions");
+      const adminLink = document.createElement("a");
+      adminLink.href = "Admin.html";
+      adminLink.className = "user-action";
+      adminLink.textContent = "Quản lý";
+      userActions.insertBefore(adminLink, authLink);
+    }
+} else {
+    logoutBtn.style.display = "none";
+    authLink.style.display = "inline";
+  }
+
+  // KHỞI TẠO DANH MỤC NẾU CHƯA CÓ
+  if (!localStorage.getItem("allCategories")) {
+    const defaultCategories = [
+      { id: "dienthoai", name: "Điện thoại" },
+      { id: "quanao", name: "Quần áo" },
+      { id: "giaydep", name: "Giày dép" },
+      { id: "phukien", name: "Phụ kiện" },
+      { id: "khac", name: "Khác" }
+    ];
+    localStorage.setItem("allCategories", JSON.stringify(defaultCategories));
+  }
+
+  // Cập nhật giỏ hàng
+  updateCartCount();
+  
+  // Tải danh mục và sản phẩm
+  loadCategories();
+  renderAllProducts();
+  
+  // Thêm sự kiện click cho các danh mục
+  document.querySelectorAll('.category-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      
+      // Xóa active tất cả các link
+      document.querySelectorAll('.category-link').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // Thêm active cho link được click
+      this.classList.add('active');
+      
+      // Cuộn đến section tương ứng nếu không phải "Tất cả"
+      const category = this.getAttribute('data-category');
+      if (category !== "all") {
+        const section = document.getElementById(category);
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  });
+});
 
     function updateCartCount() {
       const cart = JSON.parse(localStorage.getItem("cart")) || [];
       document.getElementById("cartCount").textContent = cart.length;
+    
+    
     }
-
-    const categoryNames = {
-      dienthoai: "Điện thoại",
-      quanao: "Quần áo",
-      giaydep: "Giày dép",
-      phukien: "Phụ kiện",
-      khac: "Khác"
-    };
 
     const defaultProducts = [
       {
+        id: 1,
         name: "Điện thoại Xiaomi",
         price: 3990000,
-        image: "xiaomi-mi-9-1-600x600.jpg",
+        image: "img/xiaomi-mi-9-1-600x600.jpg",
         desc: "Smartphone cao cấp",
         category: "dienthoai"
       },
       {
+        id: 2,
         name: "Áo Hoodie Unisex",
         price: 299000,
-        image: "ao-hoodie-unisex-nam-nu-insidemen-ihd002bz__7__ff4a3abea33141b99dd7dd0ad98039ec.jpg",
+        image: "img/ao-hoodie-unisex-nam-nu-insidemen-ihd002bz__7__ff4a3abea33141b99dd7dd0ad98039ec.jpg",
         desc: "Áo hoodie dành cho nam/nữ, chất liệu nỉ, giữ ấm tốt",
         category: "quanao"
       },
       {
+        id: 3,
         name: "Giày Thể Thao",
         price: 599000,
-        image: "images.jpg",
+        image: "img/images.jpg",
         desc: "Giày thể thao êm chân",
         category: "giaydep"
       },
       {
+        id: 4,
         name: "Ốp điện thoại iPhone",
         price: 99000,
-        image: "op-lung-iphone-15-pro-max-uniq-hybrid-magclick-charging-lifepro-xtreme-af-1772.jpg",
+        image: "img/op-lung-iphone-15-pro-max-uniq-hybrid-magclick-charging-lifepro-xtreme-af-1772.jpg",
         desc: "Ốp lề bắt camera, bảo vệ chống trượt",
         category: "phukien"
       },
       {
+        id: 5,
         name: "Quạt Goojodoq",
         price: 168340,
-        image: "6f9a32aed03c4908728b041ee310db99.jpg",
+        image: "img/6f9a32aed03c4908728b041ee310db99.jpg",
         desc: "Quạt gấp 3 trong 1, 100 cấp độ, cầm tay siêu mát",
         category: "khac"
       }
     ];
 
-    function renderProducts(category = 'all') {
-      const productList = document.getElementById("productList");
-      productList.innerHTML = "";
+   function renderAllProducts() {
+  // Lấy tất cả sản phẩm
+  const allProducts = [...defaultProducts, ...JSON.parse(localStorage.getItem('products')) || []];
+  
+  // Lấy tất cả danh mục và sắp xếp theo thứ tự mong muốn
+  const allCategories = JSON.parse(localStorage.getItem("allCategories")) || [
+    { id: "dienthoai", name: "Điện thoại" },
+    { id: "quanao", name: "Quần áo" },
+    { id: "giaydep", name: "Giày dép" },
+    { id: "phukien", name: "Phụ kiện" },
+    { id: "khac", name: "Khác" }
+  ];
 
-      // Lấy tất cả sản phẩm
-      const allProducts = [...defaultProducts, ...JSON.parse(localStorage.getItem('products')) || []];
+  // Sắp xếp danh mục theo thứ tự mong muốn
+  const categoryOrder = ["khac", "phukien", "giaydep", "quanao", "dienthoai"];
+  allCategories.sort((a, b) => {
+    return categoryOrder.indexOf(a.id) - categoryOrder.indexOf(b.id);
+  });
+
+  // Xóa toàn bộ sections cũ (trừ phần tiêu đề chính)
+  document.querySelectorAll('.category-section').forEach(section => {
+    if (section.id !== 'featured-products') {
+      section.remove();
+    }
+  });
+
+  // Tạo sections mới cho từng danh mục theo thứ tự đã sắp xếp
+  allCategories.forEach(category => {
+    createCategorySection(category.id, category.name);
+    renderProductsForCategory(category.id, allProducts);
+  });
+}
+
+    function renderProductsByCategory(category, allProducts, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = "";
       
       // Lọc sản phẩm theo danh mục
-      const filteredProducts = category === 'all' 
-        ? allProducts 
-        : allProducts.filter(product => product.category === category);
-
+      const filteredProducts = allProducts.filter(product => product.category === category);
+      
       // Hiển thị sản phẩm
       if (filteredProducts.length === 0) {
-        productList.innerHTML = '<p style="grid-column:1/-1;text-align:center;">Không có sản phẩm nào trong danh mục này</p>';
+        container.innerHTML = '<p class="no-products">Chưa có sản phẩm nào trong danh mục này</p>';
         return;
       }
 
@@ -358,19 +490,14 @@
         productCard.className = "product-card";
         
         // Tạo URL chi tiết sản phẩm
-        if (defaultProducts.includes(product)) {
-          productCard.href = `SanPham.html?name=${encodeURIComponent(product.name)}&price=${product.price}&img=${encodeURIComponent(product.image)}&desc=${encodeURIComponent(product.desc)}`;
-        } else {
-          const index = allProducts.indexOf(product);
-          productCard.href = `SanPham.html?productId=${index}`;
-        }
+productCard.href = `SanPham.html?id=${product.id}`;
         
         productCard.innerHTML = `
           <img src="${product.image}" alt="${product.name}">
           <p class="product-name">${product.name}</p>
           <p class="product-price">${Number(product.price).toLocaleString()}đ</p>
         `;
-        productList.appendChild(productCard);
+        container.appendChild(productCard);
       });
     }
 
@@ -386,6 +513,100 @@
       localStorage.setItem("searchResults", JSON.stringify(results));
       window.location.href = "TimKiem.html";
     }
+    // Thêm hàm loadCategories
+function loadCategories() {
+  // Lấy danh sách danh mục đầy đủ
+  const allCategories = JSON.parse(localStorage.getItem("allCategories")) || [
+    { id: "dienthoai", name: "Điện thoại" },
+    { id: "quanao", name: "Quần áo" },
+    { id: "giaydep", name: "Giày dép" },
+    { id: "phukien", name: "Phụ kiện" },
+    { id: "khac", name: "Khác" }
+  ];
+
+  // Sắp xếp danh mục theo thứ tự mong muốn
+  const categoryOrder = ["khac", "phukien", "giaydep", "quanao", "dienthoai"];
+  allCategories.sort((a, b) => {
+    return categoryOrder.indexOf(b.id) - categoryOrder.indexOf(a.id);
+  });
+
+  const categoryList = document.querySelector(".category-sidebar ul");
+  categoryList.innerHTML = `
+    <li><a href="#" class="category-link" data-category="all">Tất cả sản phẩm</a></li>
+  `;
+  
+  allCategories.forEach(category => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <a href="#${category.id}" class="category-link" data-category="${category.id}">${category.name}</a>
+    `;
+    categoryList.appendChild(li);
+  });
+
+  // Thêm sự kiện click cho các danh mục
+  document.querySelectorAll('.category-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      // Xóa active tất cả các link
+      document.querySelectorAll('.category-link').forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // Thêm active cho link được click
+      this.classList.add('active');
+    });
+  });
+}
+
+// Cập nhật sự kiện DOMContentLoaded
+document.addEventListener("DOMContentLoaded", function () {
+  loadCategories();
+  // ... các code khác
+});
+
+function createCategorySection(categoryId, categoryName) {
+  // Kiểm tra nếu section đã tồn tại thì không tạo lại
+  if (document.getElementById(categoryId)) return;
+  
+  const section = document.createElement("div");
+  section.id = categoryId;
+  section.className = "category-section";
+  section.innerHTML = `
+    <h2 class="category-title">${categoryName}</h2>
+    <div class="product-list" id="${categoryId}Products"></div>
+  `;
+  
+  // Chèn vào sau phần tiêu đề chính
+  const mainTitle = document.querySelector(".product-content h1");
+  mainTitle.insertAdjacentElement("afterend", section);
+}
+
+// Hàm mới: Hiển thị sản phẩm theo danh mục
+function renderProductsForCategory(categoryId, allProducts) {
+  const container = document.getElementById(`${categoryId}Products`);
+  if (!container) return;
+  
+  container.innerHTML = "";
+  
+  const filteredProducts = allProducts.filter(product => product.category === categoryId);
+  
+  if (filteredProducts.length === 0) {
+    container.innerHTML = '<p class="no-products">Chưa có sản phẩm nào trong danh mục này</p>';
+    return;
+  }
+
+  filteredProducts.forEach(product => {
+    const productCard = document.createElement("a");
+    productCard.className = "product-card";
+    productCard.href = `SanPham.html?id=${product.id}`;
+    
+    productCard.innerHTML = `
+      <img src="${product.image}" alt="${product.name}">
+      <p class="product-name">${product.name}</p>
+      <p class="product-price">${Number(product.price).toLocaleString()}đ</p>
+    `;
+    container.appendChild(productCard);
+  });
+}
   </script>
 </body>
-</html>
+</html> 
