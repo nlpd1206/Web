@@ -5,18 +5,18 @@
   <title>Rainbow Shop - Chi tiết sản phẩm</title>
    <link rel="stylesheet" href="style.css">
   <style>
-    /* Main container */
+   
     .product-container {
       max-width: 1100px;
       margin: 30px auto;
       background: white;
       display: flex;
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.08);
     }
     
-    /* Product image */
+    /* Product image - Thêm hiệu ứng hover */
     .product-image {
       width: 50%;
       padding-right: 30px;
@@ -24,19 +24,25 @@
     
     .product-image img {
       width: 100%;
-      border-radius: 10px;
+      border-radius: 8px;
       object-fit: contain;
+      transition: transform 0.3s ease;
     }
     
-    /* Product details */
+    .product-image img:hover {
+      transform: scale(1.02);
+    }
+    
+    /* Product details - Đồng bộ font và màu sắc */
     .product-details {
       width: 50%;
     }
     
     .product-title {
-      font-size: 28px;
+      font-size: 26px;
       margin-bottom: 15px;
-      color: #333;
+      color: #2d2d2d;
+      font-weight: 600;
     }
     
     .product-price {
@@ -44,59 +50,68 @@
       color: #d0011b;
       font-weight: bold;
       margin: 15px 0;
+      display: flex;
+      align-items: center;
     }
     
     .product-description {
       color: #555;
-      line-height: 1.6;
+      line-height: 1.7;
       margin-bottom: 25px;
+      font-size: 15px;
     }
     
-    /* Product options */
+    /* Product options - Đồng bộ với form input các trang khác */
     .product-options {
       margin: 25px 0;
     }
     
     .option-group {
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     
     .option-label {
       display: block;
       margin-bottom: 8px;
       font-weight: 500;
-      color: #555;
+      color: #444;
+      font-size: 14px;
     }
     
     .option-select, 
     .option-input {
       width: 100%;
       padding: 12px 15px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
       font-size: 15px;
-      transition: border-color 0.3s;
+      transition: all 0.3s;
+      background-color: #f9f9f9;
     }
     
     .option-select:focus,
     .option-input:focus {
       border-color: #6a5acd;
       outline: none;
+      background-color: white;
+      box-shadow: 0 0 0 2px rgba(106, 90, 205, 0.1);
     }
     
-    /* Discount section */
+    /* Discount section - Đồng bộ với các trang khác */
     .discount-section {
       display: flex;
       gap: 10px;
       margin-top: 20px;
+      align-items: center;
     }
     
     .discount-input {
       flex: 1;
       padding: 12px 15px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
       font-size: 15px;
+      background-color: #f9f9f9;
     }
     
     .discount-btn {
@@ -104,16 +119,18 @@
       background-color: #6a5acd;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: background-color 0.3s;
+      transition: all 0.3s;
+      font-weight: 500;
     }
     
     .discount-btn:hover {
       background-color: #5a4abd;
+      transform: translateY(-1px);
     }
     
-    /* Action buttons */
+    /* Action buttons - Đồng bộ với các nút khác */
     .action-buttons {
       display: flex;
       gap: 15px;
@@ -126,9 +143,10 @@
       font-size: 16px;
       font-weight: 500;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
       transition: all 0.3s;
+      text-align: center;
     }
     
     .btn-cart {
@@ -143,17 +161,22 @@
     
     .btn-cart:hover {
       background-color: #5a4abd;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(106, 90, 205, 0.2);
     }
     
     .btn-buy:hover {
       background-color: #b00015;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(208, 1, 27, 0.2);
     }
     
-    /* Responsive */
+    /* Responsive - Tối ưu cho mobile */
     @media (max-width: 768px) {
       .product-container {
         flex-direction: column;
         padding: 20px;
+        margin: 15px auto;
       }
       
       .product-image,
@@ -168,9 +191,18 @@
       
       .action-buttons {
         flex-direction: column;
+        gap: 12px;
+      }
+      
+      .product-title {
+        font-size: 22px;
+      }
+      
+      .product-price {
+        font-size: 20px;
       }
     }
-  </style>
+</style>
 </head>
 <body>
   <!-- Header giống trang chủ -->
@@ -178,7 +210,7 @@
     <a href="TrangChu.html" style="text-decoration: none;">
       <span class="rainbow-text">Rainbow</span>
     </a>
-    
+
     <div class="nav">
       <a href="GioHang.html">Giỏ hàng</a>
     </div>
@@ -224,147 +256,223 @@
     </div>
   </div>
   
-  <!-- Footer giống trang chủ -->
-  <div class="footer">
+    <div class="footer">
     <div class="contact-info">Thông tin liên hệ: 1900 1000</div>
     <p>© 2025 Rainbow Shop</p>
   </div>
 
   <script>
-    // Giữ nguyên toàn bộ script cũ
-    const params = new URLSearchParams(window.location.search);
-    const productId = params.get("productId");
+  // Lấy tham số từ URL
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get("id");
+  const productName = params.get("name");
+  const productPrice = params.get("price");
+  const productImage = params.get("img");
+  const productDesc = params.get("desc");
 
-    if (productId !== null) {
-      const products = JSON.parse(localStorage.getItem("products")) || [];
-      const product = products[productId];
-      if (!product) {
-        alert("Không tìm thấy sản phẩm.");
-        window.location.href = "TrangChu.html";
+  // Danh sách sản phẩm mặc định
+  const defaultProducts = [
+    {
+      id: 1,
+      name: "Điện thoại Xiaomi",
+      price: 3990000,
+      image: "img/xiaomi-mi-9-1-600x600.jpg",
+      desc: "Smartphone cao cấp",
+      category: "dienthoai"
+    },
+    {
+      id: 2,
+      name: "Áo Hoodie Unisex",
+      price: 299000,
+      image: "img/ao-hoodie-unisex-nam-nu-insidemen-ihd002bz__7__ff4a3abea33141b99dd7dd0ad98039ec.jpg",
+      desc: "Áo hoodie dành cho nam/nữ, chất liệu nỉ, giữ ấm tốt",
+      category: "quanao"
+    },
+    {
+      id: 3,
+      name: "Giày Thể Thao",
+      price: 599000,
+      image: "img/images.jpg",
+      desc: "Giày thể thao êm chân",
+      category: "giaydep"
+    },
+    {
+      id: 4,
+      name: "Ốp điện thoại iPhone",
+      price: 99000,
+      image: "img/op-lung-iphone-15-pro-max-uniq-hybrid-magclick-charging-lifepro-xtreme-af-1772.jpg",
+      desc: "Ốp lề bắt camera, bảo vệ chống trượt",
+      category: "phukien"
+    },
+    {
+      id: 5,
+      name: "Quạt Goojodoq",
+      price: 168340,
+      image: "img/6f9a32aed03c4908728b041ee310db99.jpg",
+      desc: "Quạt gấp 3 trong 1, 100 cấp độ, cầm tay siêu mát",
+      category: "khac"
+    }
+  ];
+
+  // Tải danh sách sản phẩm từ localStorage
+  const products = JSON.parse(localStorage.getItem("products")) || [];
+
+  // Tìm sản phẩm
+  let product;
+  if (productId) {
+    // Tìm trong cả sản phẩm từ localStorage và mặc định
+    product = products.find(p => p.id == productId) || 
+              defaultProducts.find(p => p.id == productId);
+  }
+
+  if (product) {
+    // Hiển thị thông tin sản phẩm
+    renderProduct(
+      product.name, 
+      product.price, 
+      product.desc, 
+      product.image, 
+      product.colors, 
+      product.sizes
+    );
+  } else {
+    alert("Không tìm thấy sản phẩm.");
+    window.location.href = "TrangChu.html";
+  }
+
+  // Hàm hiển thị sản phẩm - ĐÃ CẬP NHẬT
+  function renderProduct(name, price, desc, img, colors, sizes) {
+    document.getElementById('product-name').innerText = name;
+    document.getElementById('product-price').innerText = Number(price).toLocaleString() + 'đ';
+    document.getElementById('product-desc').innerText = desc;
+    
+    // Xử lý ảnh - CẬP NHẬT THEO CODE TRƯỚC
+    const imgElement = document.getElementById('product-image');
+    
+    // Thêm fallback nếu không tìm thấy ảnh
+    imgElement.onerror = function() {
+      this.src = 'img/no-image.png';
+    };
+    
+    // Hiển thị ảnh sản phẩm
+    if (img) {
+      // Kiểm tra nếu là Data URL (base64) hoặc đường dẫn thông thường
+      if (img.startsWith('data:image')) {
+        imgElement.src = img;
+      } else {
+        // Thêm fallback cho đường dẫn ảnh
+        imgElement.src = img || 'img/no-image.png';
       }
-
-      renderProduct(product.name, product.price, product.desc, product.image, product.colors, product.sizes);
     } else {
-      const name = params.get('name');
-      const price = parseInt(params.get('price')) || 0;
-      const desc = params.get('desc') || '';
-      const img = params.get('img') || '';
-      const colors = params.get('colors');
-      const sizes = params.get('sizes');
-
-      renderProduct(name, price, desc, img, colors, sizes);
+      imgElement.src = 'img/no-image.png';
     }
 
-    function renderProduct(name, price, desc, img, colors, sizes) {
-      document.getElementById('product-name').innerText = name;
-      document.getElementById('product-price').innerText = Number(price).toLocaleString() + 'đ';
-      document.getElementById('product-desc').innerText = desc;
-      document.getElementById('product-image').src = img;
+    // Xóa các option cũ nếu có
+    const variationSelect = document.getElementById('variation-select');
+    const sizeSelect = document.getElementById('size-select');
+    if (variationSelect) variationSelect.innerHTML = '';
+    if (sizeSelect) sizeSelect.innerHTML = '';
 
-      const variationSelect = document.getElementById("variation");
-      const sizeSelect = document.getElementById("size");
-
-      if (colors) {
-        colors.split(',').forEach(color => {
-          const opt = document.createElement("option");
-          opt.value = color;
-          opt.textContent = color;
-          variationSelect.appendChild(opt);
-        });
-      } else {
-        document.getElementById("variation-group").style.display = 'none';
-      }
-
-      if (sizes) {
-        sizes.split(',').forEach(size => {
-          const opt = document.createElement("option");
-          opt.value = size;
-          opt.textContent = size;
-          sizeSelect.appendChild(opt);
-        });
-      } else {
-        document.getElementById("size-group").style.display = 'none';
-      }
+    if (colors && variationSelect) {
+      document.getElementById("variation-group").style.display = 'block';
+      colors.split(',').forEach(color => {
+        const opt = document.createElement("option");
+        opt.value = color;
+        opt.textContent = color;
+        variationSelect.appendChild(opt);
+      });
+    } else if (document.getElementById("variation-group")) {
+      document.getElementById("variation-group").style.display = 'none';
     }
 
-    function addToCart() {
-      const user = JSON.parse(localStorage.getItem("currentUser"));
-      if (!user) {
-        alert("⚠️ Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng.");
-        window.location.href = "DangNhap.html";
-        return;
-      }
+    if (sizes && sizeSelect) {
+      document.getElementById("size-group").style.display = 'block';
+      sizes.split(',').forEach(size => {
+        const opt = document.createElement("option");
+        opt.value = size;
+        opt.textContent = size;
+        sizeSelect.appendChild(opt);
+      });
+    } else if (document.getElementById("size-group")) {
+      document.getElementById("size-group").style.display = 'none';
+    }
+  }
 
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+  function addToCart() {
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const imgElement = document.getElementById("product-image");
+    
+    const name = document.getElementById("product-name").innerText;
+    const priceText = document.getElementById("product-price").innerText.replace(/[^\d]/g, "");
+    const price = parseInt(priceText);
+    // Lấy ảnh từ src của img element - đảm bảo lấy cả Data URL nếu có
+    const image = imgElement.src; 
+    const desc = document.getElementById("product-desc").innerText;
+    const color = document.getElementById("variation")?.value || "";
+    const size = document.getElementById("size")?.value || "";
+    const quantity = parseInt(document.getElementById("quantity").value) || 1;
+    const discount = document.getElementById("discount")?.value || "";
 
-      const name = document.getElementById("product-name").innerText;
-      const priceText = document.getElementById("product-price").innerText.replace(/[^\d]/g, "");
-      const price = parseInt(priceText);
-      const image = document.getElementById("product-image").src;
-      const desc = document.getElementById("product-desc").innerText;
-      const color = document.getElementById("variation")?.value || "";
-      const size = document.getElementById("size")?.value || "";
-      const quantity = parseInt(document.getElementById("quantity").value) || 1;
-      const discount = document.getElementById("discount")?.value || "";
+    const product = {
+      name,
+      price,
+      image,
+      desc,
+      color,
+      size,
+      quantity,
+      discount
+    };
 
-      const product = {
-        name,
-        price,
-        image,
-        desc,
-        color,
-        size,
-        quantity,
-        discount
-      };
+    cart.push(product);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("✅ Đã thêm vào giỏ hàng!");
+  }
 
-      cart.push(product);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      alert("✅ Đã thêm vào giỏ hàng!");
+  function applyDiscount() {
+    const code = document.getElementById('discount').value.trim();
+    let priceText = document.getElementById('product-price').innerText.replace(/[^\d]/g, "");
+    let price = parseInt(priceText);
+
+    if (code === 'GIAM10K') {
+      price = price * 0.9;
+      alert('Áp dụng mã GIAM10 - giảm 10%');
+    } else if (code === 'GIAM50K') {
+      price = price - 50000;
+      alert('Áp dụng mã GIAM50K - giảm 50.000đ');
+    } else {
+      alert('Mã không hợp lệ hoặc không có khuyến mãi');
+      return;
     }
 
-    function applyDiscount() {
-      const code = document.getElementById('discount').value.trim();
-      let priceText = document.getElementById('product-price').innerText.replace(/[^\d]/g, "");
-      let price = parseInt(priceText);
+    document.getElementById('product-price').innerText = Math.max(price, 0).toLocaleString() + 'đ';
+  }
 
-      if (code === 'GIAM10K') {
-        price = price * 0.9;
-        alert('Áp dụng mã GIAM10 - giảm 10%');
-      } else if (code === 'GIAM50K') {
-        price = price - 50000;
-        alert('Áp dụng mã GIAM50K - giảm 50.000đ');
-      } else {
-        alert('Mã không hợp lệ hoặc không có khuyến mãi');
-        return;
-      }
-
-      document.getElementById('product-price').innerText = Math.max(price, 0).toLocaleString() + 'đ';
+  function buyNow() {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    if (!user) {
+      window.location.href = "DangNhap.html";
+      return;
     }
 
-    function buyNow() {
-      const user = JSON.parse(localStorage.getItem("currentUser"));
-      if (!user) {
-        window.location.href = "DangNhap.html";
-        return;
-      }
+    const quantity = parseInt(document.getElementById("quantity").value) || 1;
+    const imgElement = document.getElementById("product-image");
 
-      const quantity = parseInt(document.getElementById("quantity").value) || 1;
+    const product = {
+      name: document.getElementById("product-name").innerText,
+      price: parseInt(document.getElementById("product-price").innerText.replace(/[^\d]/g, "")),
+      desc: document.getElementById("product-desc").innerText,
+      // Lấy ảnh từ src của img element - đảm bảo lấy cả Data URL nếu có
+      image: imgElement.src,
+      color: document.getElementById("variation")?.value || '',
+      size: document.getElementById("size")?.value || '',
+      quantity
+    };
 
-      const product = {
-        name: document.getElementById("product-name").innerText,
-        price: parseInt(document.getElementById("product-price").innerText.replace(/[^\d]/g, "")),
-        desc: document.getElementById("product-desc").innerText,
-        image: document.getElementById("product-image").src,
-        color: document.getElementById("variation")?.value || '',
-        size: document.getElementById("size")?.value || '',
-        quantity
-      };
-
-      localStorage.setItem("checkoutItem", JSON.stringify(product));
-      window.location.href = "ThanhToan.html";
-      localStorage.removeItem("selectedToBuy");
-    }
-  </script>
+    localStorage.setItem("checkoutItem", JSON.stringify(product));
+    window.location.href = "ThanhToan.html";
+    localStorage.removeItem("selectedToBuy");
+  }
+</script>
 </body>
 </html>
