@@ -212,47 +212,54 @@
   </div>
 
   <script>
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      
-      const username = document.getElementById('username').value;
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-      const phone = document.getElementById('phone').value;
-      const accountType = document.querySelector('input[name="accountType"]:checked').value;
-      
-      // Kiểm tra mật khẩu trùng khớp
-      if (password !== confirmPassword) {
-        alert('Mật khẩu không trùng khớp!');
-        return;
-      }
-      
-      // Kiểm tra user đã tồn tại chưa
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-      const userExists = users.some(user => user.username === username || user.email === email);
-      
-      if (userExists) {
-        alert('Tên đăng nhập hoặc email đã tồn tại!');
-        return;
-      }
-      
-      // Thêm user mới
-      const newUser = {
-        username,
-        email,
-        password,
-        phone: phone || '',
-        role: accountType,
-        registeredAt: new Date().toISOString()
-      };
-      
-      users.push(newUser);
-      localStorage.setItem('users', JSON.stringify(users));
-      
-      alert('Đăng ký thành công! Vui lòng đăng nhập.');
-      window.location.href = 'DangNhap.html';
-    });
+   document.getElementById('registerForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const username = document.getElementById('username').value;
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
+  const phone = document.getElementById('phone').value;
+  const accountType = document.querySelector('input[name="accountType"]:checked').value;
+  
+  // Kiểm tra mật khẩu trùng khớp
+  if (password !== confirmPassword) {
+    alert('Mật khẩu không trùng khớp!');
+    return;
+  }
+  
+  // Kiểm tra username không được là "ADMIN"
+  if (username.toUpperCase() === "ADMIN") {
+    alert('Tên đăng nhập không được là ADMIN!');
+    return;
+  }
+  
+  // Kiểm tra user đã tồn tại chưa
+  const users = JSON.parse(localStorage.getItem('users')) || [];
+  const userExists = users.some(user => user.username === username || user.email === email);
+  
+  if (userExists) {
+    alert('Tên đăng nhập hoặc email đã tồn tại!');
+    return;
+  }
+  
+  // Thêm user mới
+  const newUser = {
+    username,
+    email,
+    password,
+    phone: phone || '',
+    role: accountType, // "user" hoặc "seller"
+    fullName: "", // Có thể thêm trường này trong form
+    registeredAt: new Date().toISOString()
+  };
+  
+  users.push(newUser);
+  localStorage.setItem('users', JSON.stringify(users));
+  
+  alert('Đăng ký thành công! Vui lòng đăng nhập.');
+  window.location.href = 'DangNhap.html';
+});
   </script>
 </body>
 </html>
