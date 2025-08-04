@@ -328,6 +328,12 @@
     }
 
     function buySelected() {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (!currentUser) {
+    alert("⚠️ Vui lòng đăng nhập để thanh toán!");
+    window.location.href = "DangNhap.html"; // Chuyển hướng đến trang đăng nhập
+    return; // Dừng hàm ngay lập tức
+  }
       const selected = document.querySelectorAll('.select-to-buy:checked');
       if (selected.length === 0) {
         return alert("Vui lòng chọn sản phẩm để mua.");
