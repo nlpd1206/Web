@@ -297,6 +297,44 @@
       // Mặc định hiển thị tất cả sản phẩm
       filterProductsByCategory('all');
     });
+
+    // Danh sách danh mục
+function loadCategories() {
+  const categories = JSON.parse(localStorage.getItem("categories")) || [
+    { name: "Điện thoại", id: "dienthoai" },
+    { name: "Quần áo", id: "quanao" },
+    { name: "Giày dép", id: "giaydep" },
+    { name: "Phụ kiện", id: "phukien" },
+    { name: "Khác", id: "khac" }
+  ];
+
+  const categoryList = document.querySelector(".category-sidebar ul");
+  categoryList.innerHTML = `
+    <li><a href="#" class="category-link active" data-category="all">Tất cả sản phẩm</a></li>
+  `;
+  
+  categories.forEach(category => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <a href="#" class="category-link" data-category="${category.id}">${category.name}</a>
+    `;
+    categoryList.appendChild(li);
+  });
+
+  // Thêm sự kiện click cho các danh mục
+  document.querySelectorAll('.category-link').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const category = this.getAttribute('data-category');
+      filterProductsByCategory(category);
+    });
+  });
+}
+
+// Khi trang tải
+document.addEventListener("DOMContentLoaded", function() {
+  loadCategories();
+});
   </script>
 </body>
 </html>
