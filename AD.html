@@ -313,6 +313,7 @@
           <tr>
             <th>Mã đơn</th>
             <th>Khách hàng</th>
+             <th>Số điện thoại</th>
             <th>Ngày đặt</th>
             <th>Tổng tiền</th>
             <th>Trạng thái</th>
@@ -500,7 +501,6 @@
           <td>${getCategoryName(product.category)}</td>
           <td>${product.stock || 0}</td>
           <td class="action-buttons">
-            <button class="btn btn-edit" onclick="editProduct(${index})">Sửa</button>
             <button class="btn btn-delete" onclick="deleteProduct(${index})">Xóa</button>
           </td>
         `;
@@ -573,27 +573,91 @@
 
     // ========== ORDER FUNCTIONS ==========
     function loadOrders() {
-      const orders = JSON.parse(localStorage.getItem("orders")) || [];
-      const ordersList = document.getElementById("ordersList");
-      ordersList.innerHTML = "";
-      
-      orders.forEach(order => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${order.id || "DH" + Math.floor(Math.random() * 10000)}</td>
-          <td>${order.customer || "Khách vãng lai"}</td>
-          <td>${order.date || new Date().toLocaleDateString()}</td>
-          <td>${Number(order.total || 0).toLocaleString()}đ</td>
-          <td><span class="status-badge status-${order.status || "pending"}">${getStatusText(order.status || "pending")}</span></td>
-          <td class="action-buttons">
-            <button class="btn btn-edit" onclick="editOrderStatus('${order.id}')">Sửa</button>
-          </td>
-        `;
-        ordersList.appendChild(tr);
-      });
-      
-      updateOrderStats();
-    }
+  const orders = JSON.parse(localStorage.getItem("orders")) || [];
+  const ordersList = document.getElementById("ordersList");
+  ordersList.innerHTML = "";
+  
+  orders.forEach(order => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${order.id || "DH" + Math.floor(Math.random() * 10000)}</td>
+      <td>${order.customer || "Khách vãng lai"}</td>
+      <td>${order.phone || "N/A"}</td>
+      <td>${order.date || new Date().toLocaleDateString()}</td>
+      <td>${Number(order.total || 0).toLocaleString()}đ</td>
+      <td><span class="status-badge status-${order.status || "pending"}">${getStatusText(order.status || "pending")}</span></td>
+      <td class="action-buttons">
+        <button class="btn btn-edit" onclick="editOrderStatus('${order.id}')">Sửa</button>
+        <button class="btn btn-delete" onclick="deleteOrder('${order.id}')">Xóa</button>
+      </td>
+    `;
+    ordersList.appendChild(tr);
+  });
+  
+  updateOrderStats();
+}
+
+function getStatusText(status) {
+  const statusText = {
+    pending: "Chờ xử lý",
+    processing: "Đang xử lý",
+    shipped: "Đang giao hàng",
+    delivered: "Đã giao",
+    cancelled: "Đã hủy"
+  };
+  return statusText[status] || status;
+}
+
+function editOrderStatus(orderId) {
+  const orders = JSON.parse(localStorage.getItem("orders")) || [];
+  const order = orders.find(o => o.id === orderId);
+  
+  if (order) {
+    document.getElementById("orderId").value = orderId;
+    document.getElementById("orderStatus").value = order.status || "pending";
+    openModal("orderStatusModal");
+  }
+}
+
+function saveOrderStatus() {
+  const orderId = document.getElementById("orderId").value;
+  const newStatus = document.getElementById("orderStatus").value;
+  
+  const orders = JSON.parse(localStorage.getItem("orders")) || [];
+  const orderIndex = orders.findIndex(o => o.id === orderId);
+  
+  if (orderIndex !== -1) {
+    orders[orderIndex].status = newStatus;
+    localStorage.setItem("orders", JSON.stringify(orders));
+    loadOrders();
+  }
+  
+  closeModal("orderStatusModal");
+}
+
+function deleteOrder(orderId) {
+  if (confirm("Bạn có chắc muốn xóa đơn hàng này?")) {
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+    const updatedOrders = orders.filter(o => o.id !== orderId);
+    localStorage.setItem("orders", JSON.stringify(updatedOrders));
+    loadOrders();
+  }
+}
+
+function updateOrderStats() {
+  const orders = JSON.parse(localStorage.getItem("orders")) || [];
+  
+  document.getElementById("totalOrders").textContent = orders.length;
+  
+  const deliveredOrders = orders.filter(o => o.status === "delivered").length;
+  document.getElementById("deliveredOrders").textContent = deliveredOrders;
+  
+  const totalRevenue = orders
+    .filter(o => o.status === "delivered")
+    .reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+  
+  document.getElementById("totalRevenue").textContent = totalRevenue.toLocaleString() + "đ";
+}
 
     function editOrderStatus(orderId) {
       const orders = JSON.parse(localStorage.getItem("orders")) || [];
@@ -638,66 +702,74 @@
 
     // ========== CATEGORY FUNCTIONS ==========
     function loadCategories() {
-      // Danh mục mặc định
-      const defaultCategories = [
-        { name: "Điện thoại", id: "dienthoai", isDefault: true },
-        { name: "Quần áo", id: "quanao", isDefault: true },
-        { name: "Giày dép", id: "giaydep", isDefault: true },
-        { name: "Phụ kiện", id: "phukien", isDefault: true },
-        { name: "Khác", id: "khac", isDefault: true }
-      ];
-      
-      // Danh mục tùy chỉnh từ localStorage
-      const customCategories = JSON.parse(localStorage.getItem("categories")) || [];
-      
-      // Đếm số sản phẩm cho mỗi danh mục
-      const products = JSON.parse(localStorage.getItem("products")) || [];
-      const allCategories = [...defaultCategories, ...customCategories].map(category => {
-        return {
-          ...category,
-          productCount: products.filter(p => p.category === category.id).length
-        };
-      });
+  // Danh mục mặc định (không thể xóa/sửa)
+  const defaultCategories = [
+    { id: "dienthoai", name: "Điện thoại", isDefault: true },
+    { id: "quanao", name: "Quần áo", isDefault: true },
+    { id: "giaydep", name: "Giày dép", isDefault: true },
+    { id: "phukien", name: "Phụ kiện", isDefault: true },
+    { id: "khac", name: "Khác", isDefault: true }
+  ];
+  
+  // Danh mục tùy chỉnh từ localStorage
+  const customCategories = JSON.parse(localStorage.getItem("categories")) || [];
+  
+  // Đếm số sản phẩm cho mỗi danh mục
+  const products = JSON.parse(localStorage.getItem("products")) || [];
+  const allCategories = [...defaultCategories, ...customCategories].map(category => {
+    return {
+      ...category,
+      productCount: products.filter(p => p.category === category.id).length
+    };
+  });
 
       // Hiển thị
-      const categoriesList = document.getElementById("categoriesList");
-      categoriesList.innerHTML = "";
-      
-      allCategories.forEach((category, index) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${index + 1}</td>
-          <td>${category.name} ${category.isDefault ? '<span style="color:#888">(Mặc định)</span>' : ''}</td>
-          <td>${category.productCount}</td>
-          <td class="action-buttons">
-            ${!category.isDefault ? `<button class="btn btn-edit" onclick="editCustomCategory(${index - defaultCategories.length})">Sửa</button>` : ''}
-            ${!category.isDefault ? `<button class="btn btn-delete" onclick="deleteCustomCategory(${index - defaultCategories.length})">Xóa</button>` : ''}
-          </td>
-        `;
-        categoriesList.appendChild(tr);
-      });
-    }
+       // Hiển thị
+  const categoriesList = document.getElementById("categoriesList");
+  categoriesList.innerHTML = "";
+  
+  allCategories.forEach((category, index) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${index + 1}</td>
+      <td>${category.name} ${category.isDefault ? '<span style="color:#888">(Mặc định)</span>' : ''}</td>
+      <td>${category.productCount}</td>
+      <td class="action-buttons">
+        ${!category.isDefault ? `<button class="btn btn-edit" onclick="editCustomCategory(${index - defaultCategories.length})">Sửa</button>` : ''}
+        ${!category.isDefault ? `<button class="btn btn-delete" onclick="deleteCustomCategory(${index - defaultCategories.length})">Xóa</button>` : ''}
+      </td>
+    `;
+    categoriesList.appendChild(tr);
+  });
+  
+  // Lưu danh sách đầy đủ để sử dụng ở các trang khác
+  localStorage.setItem("allCategories", JSON.stringify(allCategories));
+}
 
-    function updateProductCategoryDropdown() {
-      const defaultCategories = [
-        { name: "Điện thoại", id: "dienthoai" },
-        { name: "Quần áo", id: "quanao" },
-        { name: "Giày dép", id: "giaydep" },
-        { name: "Phụ kiện", id: "phukien" },
-        { name: "Khác", id: "khac" }
-      ];
-      
-      const customCategories = JSON.parse(localStorage.getItem("categories")) || [];
-      const select = document.getElementById("modalProductCategory");
-      select.innerHTML = '<option value="">-- Chọn danh mục --</option>';
-      
-      [...defaultCategories, ...customCategories].forEach(category => {
-        const option = document.createElement("option");
-        option.value = category.id;
-        option.textContent = category.name;
-        select.appendChild(option);
-      });
-    }
+function updateAllCategories() {
+  const defaultCategories = [
+    { id: "dienthoai", name: "Điện thoại" },
+    { id: "quanao", name: "Quần áo" },
+    { id: "giaydep", name: "Giày dép" },
+    { id: "phukien", name: "Phụ kiện" },
+    { id: "khac", name: "Khác" }
+  ];
+  const customCategories = JSON.parse(localStorage.getItem("categories")) || [];
+  localStorage.setItem("allCategories", JSON.stringify([...defaultCategories, ...customCategories]));
+}
+
+   function updateProductCategoryDropdown() {
+  const allCategories = JSON.parse(localStorage.getItem("allCategories")) || [];
+  const select = document.getElementById("modalProductCategory");
+  select.innerHTML = '<option value="">-- Chọn danh mục --</option>';
+  
+  allCategories.forEach(category => {
+    const option = document.createElement("option");
+    option.value = category.id;
+    option.textContent = category.name;
+    select.appendChild(option);
+  });
+}
 
     function addCategory() {
       document.getElementById("modalCategoryTitle").textContent = "Thêm danh mục mới";
@@ -717,40 +789,46 @@
       openModal("categoryModal");
     }
 
-    function saveCategory() {
-      const defaultCategories = ["dienthoai", "quanao", "giaydep", "phukien", "khac"];
-      const customCategories = JSON.parse(localStorage.getItem("categories")) || [];
-      const index = document.getElementById("categoryId").value;
-      const isNew = index === "";
-      
-      const newCategory = {
-        name: document.getElementById("modalCategoryName").value,
-        id: generateCategoryId(document.getElementById("modalCategoryName").value)
-      };
-      
-      // Kiểm tra không trùng với danh mục mặc định
-      if (defaultCategories.includes(newCategory.id)) {
-        alert("Danh mục này trùng với danh mục mặc định!");
-        return;
-      }
-      
-      // Kiểm tra không trùng với danh mục tùy chỉnh khác
-      if (customCategories.some(cat => cat.id === newCategory.id && (isNew || customCategories[index].id !== newCategory.id))) {
-        alert("Danh mục này đã tồn tại!");
-        return;
-      }
-      
-      if (isNew) {
-        customCategories.push(newCategory);
-      } else {
-        customCategories[index] = newCategory;
-      }
-      
-      localStorage.setItem("categories", JSON.stringify(customCategories));
-      loadCategories();
-      closeModal("categoryModal");
-    }
+function saveCategory() {
+  const defaultCategories = ["dienthoai", "quanao", "giaydep", "phukien", "khac"];
+  const customCategories = JSON.parse(localStorage.getItem("categories")) || [];
+  const index = document.getElementById("categoryId").value;
+  const isNew = index === "";
+  
+  const newCategory = {
+    id: generateCategoryId(document.getElementById("modalCategoryName").value),
+    name: document.getElementById("modalCategoryName").value
+  };
 
+  // Nếu là sửa danh mục
+  if (!isNew) {
+    // Kiểm tra xem tên mới có trùng với danh mục khác không (trừ chính nó)
+    const existingIndex = customCategories.findIndex((cat, i) => 
+      i !== parseInt(index) && cat.id === newCategory.id
+    );
+    
+    if (existingIndex !== -1) {
+      alert("Danh mục này đã tồn tại!");
+      return;
+    }
+    
+    customCategories[index] = newCategory;
+  } 
+  // Nếu là thêm mới
+  else {
+    // Kiểm tra trùng lặp với cả danh mục mặc định và tùy chỉnh
+    if ([...defaultCategories, ...customCategories.map(c => c.id)].includes(newCategory.id)) {
+      alert("Danh mục này đã tồn tại!");
+      return;
+    }
+    customCategories.push(newCategory);
+  }
+
+  localStorage.setItem("categories", JSON.stringify(customCategories));
+  updateAllCategories();
+  loadCategories();
+  closeModal("categoryModal");
+}
     function deleteCustomCategory(index) {
       const customCategories = JSON.parse(localStorage.getItem("categories")) || [];
       
@@ -849,8 +927,6 @@
         event.target.style.display = "none";
       }
     });
-</script>
-
 </script>
 </body>
 </html>
